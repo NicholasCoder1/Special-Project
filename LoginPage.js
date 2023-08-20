@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loginForm.addEventListener("submit", e => {
         e.preventDefault();
 
-     
+
 
         setFormMessage(loginForm, "error", "Invalid username/password combination");
     });
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         setFormMessage(loginForm, "success", "Password reset link has been sent to your email.");
     });
-    
+
 
 
     document.querySelectorAll(".form__input").forEach(inputElement => {
@@ -61,3 +61,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+function registerUser() {
+    var username = document.getElementById('username').value;
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+    var confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+        var resultDiv = document.getElementById('registrationResult');
+        resultDiv.textContent = 'Password and Confirm Password do not match.';
+        return;
+    }
+
+
+
+   
+    var registrationData = {
+        username: username,
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword
+
+    };
+
+   
+    var success = simulateBackendRegistration(registrationData);
+
+    var resultDiv = document.getElementById('registrationResult');
+    if (success) {
+        resultDiv.textContent = 'Account created successfully.';
+    } else {
+        resultDiv.textContent = 'Error creating account. Please try again.';
+    }
+}
+
+
+function simulateBackendRegistration(data) {
+    
+    return true;
+}

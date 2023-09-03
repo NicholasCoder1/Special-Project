@@ -1,0 +1,119 @@
+<?php
+// Database connection parameters
+$servername = "your_server_name";
+$username = "your_username";
+$password = "your_password";
+$dbname = "your_database_name";
+
+// Initialize the prompt message variable
+$promptMessage = "";
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Get the username and password entered by the user
+    $enteredUsername = $_POST["username"];
+    $enteredPassword = $_POST["password"];
+
+    // Create a database connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check the connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Query the database to retrieve the hashed password for the entered username
+    $sql = "SELECT password_hash FROM users WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $enteredUsername);
+    $stmt->execute();
+    $stmt->bind_result($hashedPassword);
+
+    // Fetch the result
+    $stmt->fetch();
+
+    // Close the database connection
+    $stmt->close();
+    $conn->close();
+
+    // Check if the entered password matches the hashed password
+    if (password_verify($enteredPassword, $hashedPassword)) {
+        // Successful login
+        echo "Welcome to the protected area!";
+        // You can redirect the user to another page or perform other actions here
+    } else {
+        // Incorrect password
+        $promptMessage = "Incorrect username or password. Please try again.";
+    }
+}
+?>
+
+
+
+Seperate
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <h2>Login</h2>
+    
+    <!-- Display the prompt message if it exists -->
+    <?php if (isset($promptMessage)) : ?>
+        <p style="color: red;"><?php echo $promptMessage; ?></p>
+    <?php endif; ?>
+
+    <form method="POST" action="login.php">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+
+<?php
+// Define the correct password
+$correctPassword = "your_password_here";
+
+// Initialize the prompt message variable
+$promptMessage = "";
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Get the password entered by the user
+    $enteredPassword = $_POST["password"];
+
+    // Check if the entered password matches the correct password
+    if ($enteredPassword === $correctPassword) {
+        // Successful login
+        echo "Welcome to the protected area!";
+        // You can redirect the user to another page or perform other actions here
+    } else {
+        // Incorrect password
+        $promptMessage = "Incorrect password. Please try again.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <h2>Login</h2>
+    
+    <!-- Display the prompt message if it exists -->
+    <?php if (!empty($promptMessage)) : ?>
+        <p style="color: red;"><?php echo $promptMessage; ?></p>
+    <?php endif; ?>
+
+    <form method="POST" action="login.php">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
